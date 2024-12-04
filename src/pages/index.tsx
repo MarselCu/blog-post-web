@@ -1,8 +1,22 @@
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-export default function Home() {
+const HomePage = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const authToken = Cookies.get("authToken");
+    if (!authToken) {
+      router.push("/login");
+    }
+  }, [router]);
+
   return (
     <>
-      <h1>Hello world</h1>
+     <h1>Home Page</h1>
     </>
-  )
+  );
 }
+
+export default HomePage;
