@@ -9,13 +9,18 @@ import {
   PaginationProps,
   Input,
   GetProps,
+  FloatButton,
+  Modal,
+  message,
 } from "antd";
+import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, PlusOutlined } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
-import { getPost } from "./api/postApi";
+import { deletePostById, getPost } from "./api/postApi";
 import { Post } from "./services/type";
 
 type SearchProps = GetProps<typeof Input.Search>;
 
+const { confirm } = Modal;
 const { Search } = Input;
 const pageSizeOption = [5, 10, 20];
 const itemRender: PaginationProps["itemRender"] = (
@@ -34,13 +39,14 @@ const itemRender: PaginationProps["itemRender"] = (
 
 const HomePage = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(5);
   const [search, setSearch] = useState<string>("");
   const [totalItems, setTotaItems] = useState<number>(500);
   const [goRestToken, setGoRestToken] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
 
   const postMutation = useMutation({
     mutationFn: ({
@@ -67,15 +73,35 @@ const HomePage = () => {
     },
   });
 
+  const deletePostMutation = useMutation({
+    mutationFn: ({
+      postId,
+      goRestToken,
+    }: {
+      postId: string;
+      goRestToken: string;
+    }) => deletePostById(postId, goRestToken),
+    onSuccess: () => {
+      message.success("Post deleted successfully");
+      postMutation.mutate({ goRestToken, page, pageSize, search });
+    },
+    onError: (error) => {
+      notification.error({
+        message: "Login Failed",
+        description: error.message,
+        placement: "topRight",
+        duration: 2,
+      });
+    },
+  });
+
   useEffect(() => {
     const authToken = Cookies.get("authToken");
     if (!authToken) {
       router.push("/login");
     }
     setGoRestToken(JSON.parse(`${authToken}`).token);
-    if (router.query) {
-
-    }
+    setUserId(JSON.parse(`${authToken}`).data.id);
   }, [router]);
 
   useEffect(() => {
@@ -87,10 +113,10 @@ const HomePage = () => {
     setPageSize(pageSize);
   };
 
-  const onPostClick = (data: Post ) => {
+  const onPostClick = (data: Post) => {
     router.push({
       pathname: `/post/${data.id}`,
-      query: { data: JSON.stringify(data) }, 
+      query: { data: JSON.stringify(data) },
     });
   };
 
@@ -102,6 +128,29 @@ const HomePage = () => {
       // since we dont know the total number of items
       setTotaItems(500);
     }
+  };
+
+  const onCreatePost = () => {
+    router.push("/post/create");
+  };
+
+  const showDeleteConfirm = (event: React.MouseEvent, postId: string) => {
+    event.stopPropagation();
+    confirm({
+      title: 'Are you sure delete this post?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Some descriptions',
+      okText: 'Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk() {
+        deletePostMutation.mutate({ postId, goRestToken });
+      },
+    });
+  };
+
+  const onEdit = (event: React.MouseEvent, postId: string) => {
+    event.stopPropagation();
   };
 
   return (
@@ -123,10 +172,24 @@ const HomePage = () => {
               type="inner"
               title={post.title}
               size="small"
-              className="h-40 p-4 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-blue-50 hover:shadow-lg hover:scale-105 transition-transform duration-200 ease-in-out cursor-pointer"
+              actions={
+                post.user_id === userId
+                  ? [
+                      <EditOutlined
+                        key="edit"
+                        onClick={(e) => onEdit(e, post.id)}
+                      />,
+                      <DeleteOutlined
+                        key="delete"
+                        onClick={(e) => showDeleteConfirm(e, post.id)}
+                      />,
+                    ]
+                  : []
+              }
               onClick={() => onPostClick(post)}
+              className="border-2 border-gray-300 hover:border-blue-500 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out transform cursor-pointer"
             >
-              <p className="line-clamp-3 overflow-hidden text-ellipsis text-gray-700 text-sm">
+              <p className="h-10 line-clamp-3 overflow-hidden text-ellipsis text-gray-700 text-sm">
                 {post.body}
               </p>
             </Card>
@@ -144,6 +207,14 @@ const HomePage = () => {
           />
         </div>
       </div>
+
+      <FloatButton
+        shape="square"
+        type="primary"
+        style={{ insetInlineEnd: 24 }}
+        icon={<PlusOutlined />}
+        onClick={() => onCreatePost()}
+      />
     </>
   );
 };

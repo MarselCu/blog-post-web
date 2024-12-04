@@ -13,7 +13,7 @@ export const getPost = async (
         per_page: pageSize.toString(),
     });
 
-    if (search !=='' && search !== undefined) {
+    if (search !== '' && search !== undefined) {
         params.append('title', search);
     }
 
@@ -21,3 +21,14 @@ export const getPost = async (
     return response.data;
 };
 
+export const addPost = async (userId: string, title: string, body: string, goRestToken: string) => {
+    const axiosInstance = createAxiosInstance(goRestToken);
+    const response = await axiosInstance.post(`/users/${userId}/posts`, { title, body });
+    return response.data;
+}
+
+export const deletePostById = async (id: string, goRestToken: string) => {
+    const axiosInstance = createAxiosInstance(goRestToken);
+    const response = await axiosInstance.delete(`/posts/${id}`);
+    return response.data;
+}
