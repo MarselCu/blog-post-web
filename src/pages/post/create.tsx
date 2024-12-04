@@ -139,6 +139,7 @@ export default function CreatePostPage() {
                 placeholder="Write your post content here..."
                 rows={4}
                 value={body}
+                maxLength={500}
                 onChange={(e) => setBody(e.target.value)}
                 className="rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
