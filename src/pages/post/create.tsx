@@ -27,6 +27,7 @@ export default function CreatePostPage() {
     const authToken = Cookies.get("authToken");
     if (!authToken) {
       router.push("/login");
+      return;
     }
     setGoRestToken(JSON.parse(`${authToken}`).token);
     setUserId(JSON.parse(`${authToken}`).data.id);
@@ -90,13 +91,11 @@ export default function CreatePostPage() {
   return (
     <>
       <div className="flex flex-col items-center px-8 sm:px-20 lg:px-40 py-10 bg-gray-50 min-h-screen relative">
-        {/* Back Button */}
         <button
           className="absolute top-4 left-4 flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg shadow-md transition duration-200"
           onClick={() => router.back()}
         >
           <span>&larr;</span>
-          <span>Back</span>
         </button>
 
         {/* Form Container */}
@@ -137,7 +136,7 @@ export default function CreatePostPage() {
             >
               <TextArea
                 placeholder="Write your post content here..."
-                rows={4}
+                rows={7}
                 value={body}
                 maxLength={500}
                 onChange={(e) => setBody(e.target.value)}
@@ -145,7 +144,6 @@ export default function CreatePostPage() {
               />
             </Form.Item>
 
-            {/* Submit Button */}
             <div className="flex justify-end mt-8">
               <Form.Item>
                 <Button

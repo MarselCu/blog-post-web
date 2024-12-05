@@ -48,28 +48,47 @@ export default function PostPage({ post }: { post: Post }) {
     <div className="flex flex-col items-center px-8 sm:px-20 lg:px-40 py-10 bg-gray-50 min-h-screen relative">
       {/* Back Button */}
       <button
-        className="absolute top-4 left-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md"
+        className="absolute top-4 left-4 flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md"
         onClick={() => router.back()}
+        aria-label="Go back to the previous page"
       >
-        &larr; Back
+        <span>&larr;</span>
       </button>
 
-      <div className="w-full max-w-3xl text-center">
+      <article className="w-full max-w-3xl text-center">
         {/* Title */}
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">{post.title}</h1>
+        <header>
+          <h1 className="text-3xl font-bold text-gray-800 mb-6 break-words">
+            {post.title}
+          </h1>
+        </header>
+
         {/* Author Information */}
         <div className="text-lg text-gray-600 mb-10">
           <div className="flex justify-center items-center gap-4">
             <div className="font-semibold">
               Author by {author.gender === "male" ? "Mr." : "Ms."} {author.name}
             </div>
-            <Badge color={author.status === "active" ? "green" : "red"} />
+            <Badge
+              color={author.status === "active" ? "green" : "red"}
+            />
           </div>
-          <div className="text-base">Email: {author.email}</div>
+          <div className="text-base">
+            Email:{" "}
+            <a
+              href={`mailto:${author.email}`}
+              className="text-blue-500 underline"
+            >
+              {author.email}
+            </a>
+          </div>
         </div>
+
         {/* Body */}
-        <div className="text-base text-gray-700 leading-relaxed">{post.body}</div>
-      </div>
+        <section className="text-base text-gray-700 leading-relaxed break-words">
+          {post.body}
+        </section>
+      </article>
     </div>
   );
 }

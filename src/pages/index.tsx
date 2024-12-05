@@ -99,6 +99,7 @@ const HomePage = () => {
     const authToken = Cookies.get("authToken");
     if (!authToken) {
       router.push("/login");
+      return;
     }
     setGoRestToken(JSON.parse(`${authToken}`).token);
     setUserId(JSON.parse(`${authToken}`).data.id);
