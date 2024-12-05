@@ -49,7 +49,7 @@ export default function PostPage({ post }: { post: Post }) {
       {/* Back Button */}
       <button
         className="absolute top-4 left-4 flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md"
-        onClick={() => router.back()}
+        onClick={() => router.push("/")}
         aria-label="Go back to the previous page"
       >
         <span>&larr;</span>

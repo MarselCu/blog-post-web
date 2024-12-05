@@ -12,10 +12,17 @@ import {
   FloatButton,
   Modal,
   message,
+  Checkbox,
+  CheckboxProps,
 } from "antd";
-import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, PlusOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
-import { deletePostById, getPost } from "./api/postApi";
+import { deletePostById, getPost, getUserPostOnly } from "./api/postApi";
 import { Post } from "./services/type";
 
 type SearchProps = GetProps<typeof Input.Search>;
@@ -41,6 +48,7 @@ const HomePage = () => {
   const router = useRouter();
   // const [loading, setLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [myPostOnly, setMyPostOnly] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(5);
   const [search, setSearch] = useState<string>("");
@@ -50,16 +58,21 @@ const HomePage = () => {
 
   const postMutation = useMutation({
     mutationFn: ({
+      userId,
       goRestToken,
       page,
       pageSize,
       search,
     }: {
+      userId: string;
       goRestToken: string;
       page: number;
       pageSize: number;
       search?: string;
-    }) => getPost(goRestToken, page, pageSize, search),
+    }) =>
+      myPostOnly
+        ? getUserPostOnly(userId, goRestToken, page, pageSize, search)
+        : getPost(goRestToken, page, pageSize, search),
     onSuccess: (data) => {
       setPosts(data);
     },
@@ -83,12 +96,12 @@ const HomePage = () => {
     }) => deletePostById(postId, goRestToken),
     onSuccess: () => {
       message.success("Post deleted successfully");
-      postMutation.mutate({ goRestToken, page, pageSize, search });
+      postMutation.mutate({userId, goRestToken, page, pageSize, search });
     },
     onError: (error) => {
       notification.error({
-        message: "Login Failed",
-        description: error.message,
+        message: "Failed to delete post",
+        description: "Post Not Found",
         placement: "topRight",
         duration: 2,
       });
@@ -106,8 +119,8 @@ const HomePage = () => {
   }, [router]);
 
   useEffect(() => {
-    postMutation.mutate({ goRestToken, page, pageSize, search });
-  }, [page, pageSize, search]);
+    postMutation.mutate({userId, goRestToken, page, pageSize, search });
+  }, [page, pageSize, search, myPostOnly]);
 
   const onPaginationChange = (page: number, pageSize: number) => {
     setPage(page);
@@ -138,33 +151,44 @@ const HomePage = () => {
   const showDeleteConfirm = (event: React.MouseEvent, postId: string) => {
     event.stopPropagation();
     confirm({
-      title: 'Are you sure delete this post?',
+      title: "Are you sure delete this post?",
       icon: <ExclamationCircleFilled />,
-      content: 'Some descriptions',
-      okText: 'Delete',
-      okType: 'danger',
-      cancelText: 'Cancel',
+      content: "Some descriptions",
+      okText: "Delete",
+      okType: "danger",
+      cancelText: "Cancel",
       onOk() {
         deletePostMutation.mutate({ postId, goRestToken });
       },
     });
   };
 
-  const onEdit = (event: React.MouseEvent, postId: string) => {
+  const onEdit = (event: React.MouseEvent, post: Post) => {
     event.stopPropagation();
+    router.push({
+      pathname: `/post/${post.id}/edit`,
+      query: { data: JSON.stringify(post) },
+    });
+  };
+
+  const onMyPostOnlyChange: CheckboxProps["onChange"] = (e) => {
+    setMyPostOnly(e.target.checked);
   };
 
   return (
     <>
       <div className="px-10 sm:px-20 py-10 bg-gray-50 min-h-screen">
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-2xl font-semibold text-gray-800">Posts</h1>
-          <Search
-            placeholder="Search posts..."
-            onSearch={onSearch}
-            className="w-full sm:w-80"
-            enterButton
-          />
+          <h1 className="hidden sm:block text-2xl font-semibold text-gray-800">Posts</h1>
+          <div className="flex gap-5 items-center justify-center">
+            <Checkbox onChange={onMyPostOnlyChange}>My Post Only</Checkbox>
+            <Search
+              placeholder="Search posts..."
+              onSearch={onSearch}
+              className="w-full sm:w-80"
+              enterButton
+            />
+          </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {posts.map((post, index) => (
@@ -178,7 +202,7 @@ const HomePage = () => {
                   ? [
                       <EditOutlined
                         key="edit"
-                        onClick={(e) => onEdit(e, post.id)}
+                        onClick={(e) => onEdit(e, post)}
                       />,
                       <DeleteOutlined
                         key="delete"

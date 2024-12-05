@@ -31,8 +31,13 @@ const LoginPage = () => {
     const cookies = Cookies.get("authToken");
     if (cookies) {
       const authToken = JSON.parse(cookies);
-      setName(authToken.data.name);
-      setGoRestToken(authToken.token);
+      if (authToken.remember) {
+        setName(authToken.data.name);
+        setGoRestToken(authToken.token);
+        setRememberMe(authToken.remember);
+      } else {
+        Cookies.remove("authToken");
+      }
     }
   }, []);
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { User } from "@/pages/services/type";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -37,7 +38,6 @@ export const Navbar = () => {
     }
   }, []);
 
-
   const onLogout = () => {
     Cookies.remove("authToken");
     router.push("/login");
@@ -54,7 +54,9 @@ export const Navbar = () => {
   return (
     <>
       <nav className="flex justify-between items-center py-4 px-10 bg-gray-800 text-white border-b border-gray-700 shadow-md">
-        <div className="text-xl font-semibold">BlogPost</div>
+        <div className="text-xl font-semibold">
+          <Link href="/">BlogPost</Link>
+        </div>
         <div className="flex items-center space-x-4">
           <Avatar
             style={{ backgroundColor: "#1890ff", verticalAlign: "middle" }}
@@ -69,9 +71,7 @@ export const Navbar = () => {
       </nav>
       <Drawer title={userName} onClose={onClose} open={open}>
         <div className="flex flex-col justify-between h-full">
-          <div className="flex-grow">
-            Id:{user['id']}
-          </div>
+          <div className="flex-grow">Id:{user["id"]}</div>
           <div
             className="text-red-500 cursor-pointer hover:text-red-700 text-sm py-2 text-center"
             onClick={onLogout}

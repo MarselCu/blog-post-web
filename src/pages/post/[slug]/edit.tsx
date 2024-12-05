@@ -1,11 +1,12 @@
 import { Layout } from "@/components/layout/layout";
-import { useMutation } from "@tanstack/react-query";
+import { ReactElement, use, useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import { Button, Form, FormProps, Input, notification } from "antd";
 import { useRouter } from "next/router";
-import Cookies from "js-cookie";
-import { ReactElement, useEffect, useState } from "react";
-import { addPost } from "../api/postApi";
-import { Post } from "../services/type";
+import { GetServerSideProps } from "next";
+import { Post } from "@/pages/services/type";
+import { useMutation } from "@tanstack/react-query";
+import { EditPostById } from "@/pages/api/postApi";
 
 const { TextArea } = Input;
 
@@ -14,13 +15,12 @@ type FieldType = {
   body?: string;
 };
 
-export default function CreatePostPage() {
+export default function EditPostPage({ post }: { post: Post }) {
   const router = useRouter();
   const [form] = Form.useForm();
-  const [goRestToken, setGoRestToken] = useState<string>("");
-  const [userId, setUserId] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [body, setBody] = useState<string>("");
+  const [goRestToken, setGoRestToken] = useState<string>("");
 
   useEffect(() => {
     const authToken = Cookies.get("authToken");
@@ -29,48 +29,45 @@ export default function CreatePostPage() {
       return;
     }
     setGoRestToken(JSON.parse(`${authToken}`).token);
-    setUserId(JSON.parse(`${authToken}`).data.id);
-
+    setBody(post.body);
+    setTitle(post.title);
   }, [router]);
-  
-  const createPostMutation = useMutation({
-      mutationFn: ({
-        userId,
-        title,
-        body,
-        goRestToken,
-      }: {
-        userId: string;
-        title: string;
-        body: string;
-        goRestToken: string;
-    }) => addPost(userId, title, body, goRestToken),
-    onSuccess: (data: Post) => {
-        notification.success({
-          message: data.title,
-          description: "Post created successfully",
-          placement: "topRight",
-          duration: 2,
-        });
 
-        setTitle("");
-        setBody("");
-        form.resetFields();
-      },
-      onError: (error) => {
-        notification.error({
-          message: "Failed to create post",
-          description: error.message,
-          placement: "topRight",
-          duration: 2,
-        });
-      },
+  useEffect(() => {
+    form.setFieldsValue({
+      title: title,
+      body: body,
+    });
+  }, [form, title, body]);
+
+  const editPostMutation = useMutation({
+    mutationFn: ({ title, body }: { title: string; body: string }) =>
+      EditPostById(post.id, title, body, goRestToken),
+    onSuccess: (data: Post) => {
+      notification.success({
+        message: "Post Updated",
+        description: "Post updated successfully",
+        placement: "topRight",
+        duration: 2,
+      });
+      router.push({
+        pathname: `/post/${data.id}`,
+        query: { data: JSON.stringify(data) },
+      });
+    },
+    onError: (error) => {
+      notification.error({
+        message: "Failed to update post",
+        description: error.message,
+        placement: "topRight",
+        duration: 2,
+      });
+    },
   });
 
   const onSubmit: FormProps<FieldType>["onFinish"] = (values) => {
-    
     if (typeof values.title === "string" && typeof values.body === "string") {
-      createPostMutation.mutate({ userId: userId , title: values.title, body: values.body, goRestToken: goRestToken });
+      editPostMutation.mutate({ title: values.title, body: values.body });
     }
   };
 
@@ -86,7 +83,6 @@ export default function CreatePostPage() {
       });
     });
   };
-
   return (
     <>
       <div className="flex flex-col items-center px-8 sm:px-20 lg:px-40 py-10 bg-gray-50 min-h-screen relative">
@@ -100,7 +96,7 @@ export default function CreatePostPage() {
         {/* Form Container */}
         <div className="w-full max-w-3xl bg-white p-8 shadow-lg rounded-lg">
           <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-            Create a New Post
+            Edit Post
           </h1>
 
           <Form
@@ -140,9 +136,9 @@ export default function CreatePostPage() {
                 maxLength={500}
                 onChange={(e) => setBody(e.target.value)}
                 count={{
-                  show: true,
-                  max: 500,
-                }}
+                    show: true,
+                    max: 500,
+                  }}
                 className="rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </Form.Item>
@@ -155,9 +151,9 @@ export default function CreatePostPage() {
                   htmlType="submit"
                   className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition duration-200"
                 >
-                  Submit
+                  Edit
                 </Button>
-              </Form.Item>  
+              </Form.Item>
             </div>
           </Form>
         </div>
@@ -166,6 +162,15 @@ export default function CreatePostPage() {
   );
 }
 
-CreatePostPage.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { data } = context.query;
+  const parsedData = typeof data === "string" ? JSON.parse(data) : null;
+
+  return {
+    props: {
+      post: parsedData || { id: null, user_id: null, title: "", body: "" },
+    },
+  };
 };
+
+EditPostPage.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
