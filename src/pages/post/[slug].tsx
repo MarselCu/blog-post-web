@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { Post, User } from "../services/type";
+import { Post, User } from "../../services/type";
 import { ReactElement, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GetServerSideProps } from "next";

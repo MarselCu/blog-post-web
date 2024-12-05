@@ -1,4 +1,4 @@
-import createAxiosInstance from "@/pages/services/axios";
+import createAxiosInstance from "@/services/axios";
 
 export const getUser = async (name: string, goRestToken: string) => {
     const axiosInstance = createAxiosInstance(goRestToken);

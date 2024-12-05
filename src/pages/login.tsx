@@ -11,7 +11,7 @@ import {
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { getUser } from "./api/userApi";
-import { User } from "./services/type";
+import { User } from "../services/type";
 import { useRouter } from "next/router";
 
 type FieldType = {

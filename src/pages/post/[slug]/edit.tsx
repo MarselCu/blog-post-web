@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { Button, Form, FormProps, Input, notification } from "antd";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-import { Post } from "@/pages/services/type";
+import { Post } from "@/services/type";
 import { useMutation } from "@tanstack/react-query";
 import { EditPostById } from "@/pages/api/postApi";
 

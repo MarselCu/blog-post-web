@@ -1,7 +1,7 @@
 import { Avatar, Drawer, Switch } from "antd";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { User } from "@/pages/services/type";
+import { User } from "@/services/type";
 import { useRouter } from "next/router";
 import { useTheme } from "@/context/themeContext";
 import Link from "next/link";

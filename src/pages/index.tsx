@@ -23,7 +23,7 @@ import {
 } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
 import { deletePostById, getPost, getUserPostOnly } from "./api/postApi";
-import { Post } from "./services/type";
+import { Post } from "../services/type";
 
 type SearchProps = GetProps<typeof Input.Search>;
 

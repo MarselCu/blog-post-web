@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { ReactElement, useEffect, useState } from "react";
 import { addPost } from "../api/postApi";
-import { Post } from "../services/type";
+import { Post } from "../../services/type";
 
 const { TextArea } = Input;
 
