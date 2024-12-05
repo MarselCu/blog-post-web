@@ -1,40 +1,110 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Blog Post Web Application
+> **Deskripsi Singkat:** A responsive and user-friendly blog application where users can view, create, edit, and delete blog posts.
 
-## Getting Started
 
-First, run the development server:
 
+---
+#### Live Demo: [Blog-Post-web](https://blog-post-web-rho.vercel.app/)
+
+## Feature
+- User login
+- Post list
+- Search and filter post
+- Show post detail
+- Create new post
+- Update post
+- Delete post
+- Dark mode by Tailwind CSS
+
+## Technologies Used
+- NextJs v13 with Typescript (Page Router)
+- Axios
+- TanStack Query v5
+- Tailwind CSS v3
+- AntDesign v5
+- Go REST (fake api)
+
+## Installation Guide
+#### Prerequisites
+1. Node.js: Ensure you have Node.js installed (v16 or later).
+2. Package Manager: npm or yarn installed globally
+### Step to Run Locally
+1. Clone the repository:
+```bash
+git clone https://github.com/MarselCu/blog-post-web.git blogpost
+cd blogpost
+```
+2. Install dependencies:
+```bash
+npm install
+```
+3. Start the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+4. Open your browser and navigate to:
+```link
+http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Folder Structure
+```bash
+blogpost/
+.
+├── public
+├── src
+│   ├── components
+│   │   └── layout
+│   │       └── layout.tsx
+│   ├── context
+│   │   └── themeContext.tsx
+│   ├── pages
+│   │   ├── api
+│   │   │   ├── hello.ts
+│   │   │   ├── postApi.ts
+│   │   │   └── userApi.ts
+│   │   ├── post
+│   │   │   ├── [slug]
+│   │   │   │   └── edit.tsx
+│   │   │   ├── [slug].tsx
+│   │   │   └── create.tsx
+│   │   ├── _app.tsx
+│   │   ├── _document.tsx
+│   │   ├── index.tsx
+│   │   └── login.tsx
+│   ├── services
+│   │   ├── axios.ts
+│   │   └── type.ts
+│   └── style
+│       └── globals.css
+├── .eslintc.json
+├── next.config.js
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── README.md
+├── tailwind.config.ts
+└── tsconfig.json
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## API Endpoints
+Base URL: https://gorest.co.in/public/v2
+| Method | Endpoint              | Description                 |
+|--------|-----------------------|-----------------------------|
+| GET    | `/users`              | Login user                  |
+| GET    | `/users/:id`          | Take user data              |
+| GET    | `/posts`              | Take post with pagination   |
+| GET    | `/users/:userId/posts`| Take post from specific user|
+| POST   | `/users/:userId/posts`| Create new post             |
+| DELETE | `/posts/:postId`      | Delete post by id           |
+| PATCH  | `/posts/:postId`      | Update post                 |
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Future Improvements
+- Enhance design with modern animations and transitions.
+- Clean the code.
+- Improve performance with server-side rendering (SSR) or static site generation (SSG).
+- Use private backend.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Lisensi
+[MIT License](LICENSE)
