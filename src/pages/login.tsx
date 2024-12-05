@@ -35,8 +35,6 @@ const LoginPage = () => {
         setName(authToken.data.name);
         setGoRestToken(authToken.token);
         setRememberMe(authToken.remember);
-      } else {
-        Cookies.remove("authToken");
       }
     }
   }, []);
@@ -114,13 +112,13 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-xl">
+      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-xl">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
               Welcome to BlogPost
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
               Please enter your details to continue.
             </p>
           </div>
@@ -137,7 +135,9 @@ const LoginPage = () => {
             autoComplete="off"
           >
             <Form.Item<FieldType>
-              label="Name"
+              label={
+                <span className="text-gray-800 dark:text-gray-200">Name</span>
+              }
               name="name"
               rules={[{ required: true, message: "Please input your name!" }]}
             >
@@ -145,12 +145,16 @@ const LoginPage = () => {
                 placeholder="Enter your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500"
+                className="rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-700 dark:bg-gray-700 dark:text-white"
               />
             </Form.Item>
 
             <Form.Item<FieldType>
-              label="Go Rest Token"
+              label={
+                <span className="text-gray-800 dark:text-gray-200">
+                  Go Rest Token
+                </span>
+              }
               name="token"
               rules={[{ required: true, message: "Please input your token!" }]}
             >
@@ -158,13 +162,13 @@ const LoginPage = () => {
                 placeholder="Enter Go Rest Token"
                 value={goRestToken}
                 onChange={(e) => setGoRestToken(e.target.value)}
-                className="rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500"
+                className="rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-700 dark:bg-gray-700 dark:text-white"
               />
             </Form.Item>
 
             <Form.Item<FieldType> name="remember" valuePropName="checked">
               <Checkbox
-                className="text-gray-700"
+                className="text-gray-700 dark:text-gray-300"
                 checked={rememberMe}
                 onChange={onCheckboxChange}
               >
@@ -176,7 +180,7 @@ const LoginPage = () => {
               <Button
                 type="primary"
                 htmlType="submit"
-                className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200"
+                className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 dark:focus:ring-blue-500"
               >
                 Submit
               </Button>

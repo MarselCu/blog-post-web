@@ -45,39 +45,37 @@ export default function PostPage({ post }: { post: Post }) {
   }, [router]);
 
   return (
-    <div className="flex flex-col items-center px-8 sm:px-20 lg:px-40 py-10 bg-gray-50 min-h-screen relative">
+    <div className="flex flex-col items-center px-8 sm:px-20 lg:px-40 py-10 bg-gray-50 dark:bg-gray-900 min-h-screen relative">
       {/* Back Button */}
       <button
-        className="absolute top-4 left-4 flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md"
+        className="absolute top-4 left-4 flex items-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-semibold py-2 px-4 rounded-lg shadow-md"
         onClick={() => router.push("/")}
         aria-label="Go back to the previous page"
       >
         <span>&larr;</span>
       </button>
 
-      <article className="w-full max-w-3xl text-center">
+      <article className="w-full max-w-3xl text-center dark:bg-gray-800 dark:text-white p-6 rounded-lg shadow-lg">
         {/* Title */}
         <header>
-          <h1 className="text-3xl font-bold text-gray-800 mb-6 break-words">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6 break-words">
             {post.title}
           </h1>
         </header>
 
         {/* Author Information */}
-        <div className="text-lg text-gray-600 mb-10">
+        <div className="text-lg text-gray-600 dark:text-gray-300 mb-10">
           <div className="flex justify-center items-center gap-4">
             <div className="font-semibold">
               Author by {author.gender === "male" ? "Mr." : "Ms."} {author.name}
             </div>
-            <Badge
-              color={author.status === "active" ? "green" : "red"}
-            />
+            <Badge color={author.status === "active" ? "green" : "red"} />
           </div>
           <div className="text-base">
             Email:{" "}
             <a
               href={`mailto:${author.email}`}
-              className="text-blue-500 underline"
+              className="text-blue-500 dark:text-blue-400 underline"
             >
               {author.email}
             </a>
@@ -85,7 +83,7 @@ export default function PostPage({ post }: { post: Post }) {
         </div>
 
         {/* Body */}
-        <section className="text-base text-gray-700 leading-relaxed break-words">
+        <section className="text-base text-gray-700 dark:text-gray-300 leading-relaxed break-words">
           {post.body}
         </section>
       </article>

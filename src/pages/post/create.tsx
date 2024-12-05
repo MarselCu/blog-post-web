@@ -30,47 +30,50 @@ export default function CreatePostPage() {
     }
     setGoRestToken(JSON.parse(`${authToken}`).token);
     setUserId(JSON.parse(`${authToken}`).data.id);
-
   }, [router]);
-  
+
   const createPostMutation = useMutation({
-      mutationFn: ({
-        userId,
-        title,
-        body,
-        goRestToken,
-      }: {
-        userId: string;
-        title: string;
-        body: string;
-        goRestToken: string;
+    mutationFn: ({
+      userId,
+      title,
+      body,
+      goRestToken,
+    }: {
+      userId: string;
+      title: string;
+      body: string;
+      goRestToken: string;
     }) => addPost(userId, title, body, goRestToken),
     onSuccess: (data: Post) => {
-        notification.success({
-          message: data.title,
-          description: "Post created successfully",
-          placement: "topRight",
-          duration: 2,
-        });
+      notification.success({
+        message: data.title,
+        description: "Post created successfully",
+        placement: "topRight",
+        duration: 2,
+      });
 
-        setTitle("");
-        setBody("");
-        form.resetFields();
-      },
-      onError: (error) => {
-        notification.error({
-          message: "Failed to create post",
-          description: error.message,
-          placement: "topRight",
-          duration: 2,
-        });
-      },
+      setTitle("");
+      setBody("");
+      form.resetFields();
+    },
+    onError: (error) => {
+      notification.error({
+        message: "Failed to create post",
+        description: error.message,
+        placement: "topRight",
+        duration: 2,
+      });
+    },
   });
 
   const onSubmit: FormProps<FieldType>["onFinish"] = (values) => {
-    
     if (typeof values.title === "string" && typeof values.body === "string") {
-      createPostMutation.mutate({ userId: userId , title: values.title, body: values.body, goRestToken: goRestToken });
+      createPostMutation.mutate({
+        userId: userId,
+        title: values.title,
+        body: values.body,
+        goRestToken: goRestToken,
+      });
     }
   };
 
@@ -89,17 +92,18 @@ export default function CreatePostPage() {
 
   return (
     <>
-      <div className="flex flex-col items-center px-8 sm:px-20 lg:px-40 py-10 bg-gray-50 min-h-screen relative">
+      <div className="flex flex-col items-center px-8 sm:px-20 lg:px-40 py-10 bg-gray-50 dark:bg-gray-900 min-h-screen relative">
+        {/* Back Button */}
         <button
-          className="absolute top-4 left-4 flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg shadow-md transition duration-200"
+          className="absolute top-4 left-4 flex items-center gap-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-200"
           onClick={() => router.back()}
         >
           <span>&larr;</span>
         </button>
 
         {/* Form Container */}
-        <div className="w-full max-w-3xl bg-white p-8 shadow-lg rounded-lg">
-          <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+        <div className="w-full max-w-3xl bg-white dark:bg-gray-800 p-8 shadow-lg rounded-lg">
+          <h1 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
             Create a New Post
           </h1>
 
@@ -115,7 +119,11 @@ export default function CreatePostPage() {
           >
             {/* Title Field */}
             <Form.Item<FieldType>
-              label={<span className="font-medium text-gray-700">Title</span>}
+              label={
+                <span className="font-medium text-gray-700 dark:text-gray-300">
+                  Title
+                </span>
+              }
               name="title"
               rules={[{ required: true, message: "Post title is required" }]}
             >
@@ -123,13 +131,17 @@ export default function CreatePostPage() {
                 placeholder="Enter post title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-500 focus:outline-none"
               />
             </Form.Item>
 
             {/* Body Field */}
             <Form.Item<FieldType>
-              label={<span className="font-medium text-gray-700">Body</span>}
+              label={
+                <span className="font-medium text-gray-700 dark:text-gray-300">
+                  Body
+                </span>
+              }
               name="body"
               rules={[{ required: true, message: "Post body is required" }]}
             >
@@ -143,7 +155,7 @@ export default function CreatePostPage() {
                   show: true,
                   max: 500,
                 }}
-                className="rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-500 focus:outline-none"
               />
             </Form.Item>
 
@@ -153,11 +165,11 @@ export default function CreatePostPage() {
                   size="large"
                   type="primary"
                   htmlType="submit"
-                  className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition duration-200"
+                  className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:bg-blue-500 dark:hover:bg-blue-600 transition duration-200"
                 >
                   Submit
                 </Button>
-              </Form.Item>  
+              </Form.Item>
             </div>
           </Form>
         </div>

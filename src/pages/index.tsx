@@ -96,7 +96,7 @@ const HomePage = () => {
     }) => deletePostById(postId, goRestToken),
     onSuccess: () => {
       message.success("Post deleted successfully");
-      postMutation.mutate({userId, goRestToken, page, pageSize, search });
+      postMutation.mutate({ userId, goRestToken, page, pageSize, search });
     },
     onError: (error) => {
       notification.error({
@@ -119,7 +119,7 @@ const HomePage = () => {
   }, [router]);
 
   useEffect(() => {
-    postMutation.mutate({userId, goRestToken, page, pageSize, search });
+    postMutation.mutate({ userId, goRestToken, page, pageSize, search });
   }, [page, pageSize, search, myPostOnly]);
 
   const onPaginationChange = (page: number, pageSize: number) => {
@@ -177,15 +177,22 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="px-10 sm:px-20 py-10 bg-gray-50 min-h-screen">
+      <div className="px-10 sm:px-20 py-10 bg-gray-50 dark:bg-gray-700 min-h-screen">
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="hidden sm:block text-2xl font-semibold text-gray-800">Posts</h1>
+          <h1 className="hidden sm:block text-2xl font-semibold text-gray-800 dark:text-white">
+            Posts
+          </h1>
           <div className="flex gap-5 items-center justify-center">
-            <Checkbox onChange={onMyPostOnlyChange}>My Post Only</Checkbox>
+            <Checkbox
+              onChange={onMyPostOnlyChange}
+              className="text-gray-700 dark:text-gray-300"
+            >
+              My Post Only
+            </Checkbox>
             <Search
               placeholder="Search posts..."
               onSearch={onSearch}
-              className="w-full sm:w-80"
+              className="w-full sm:w-80 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               enterButton
             />
           </div>
@@ -195,26 +202,28 @@ const HomePage = () => {
             <Card
               key={post.id || index}
               type="inner"
-              title={post.title}
+              title={<span className="text-gray-800">{post.title}</span>}
               size="small"
               actions={
                 post.user_id === userId
                   ? [
                       <EditOutlined
                         key="edit"
+                        className="text-blue-500 dark:text-blue-400 hover:text-blue-700"
                         onClick={(e) => onEdit(e, post)}
                       />,
                       <DeleteOutlined
                         key="delete"
+                        className="text-red-500 dark:text-red-400 hover:text-red-700"
                         onClick={(e) => showDeleteConfirm(e, post.id)}
                       />,
                     ]
                   : []
               }
               onClick={() => onPostClick(post)}
-              className="border-2 border-gray-300 hover:border-blue-500 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out transform cursor-pointer"
+              className="border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-white hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out transform cursor-pointer"
             >
-              <p className="h-10 line-clamp-3 overflow-hidden text-ellipsis text-gray-700 text-sm">
+              <p className="h-10 line-clamp-3 overflow-hidden text-ellipsis text-gray-700 ">
                 {post.body}
               </p>
             </Card>
@@ -228,7 +237,7 @@ const HomePage = () => {
             pageSizeOptions={pageSizeOption}
             defaultCurrent={page}
             defaultPageSize={pageSize}
-            className="pagination-custom"
+            className="pagination-custom text-gray-700 dark:text-gray-300"
           />
         </div>
       </div>
