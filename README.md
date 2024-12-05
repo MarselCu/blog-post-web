@@ -17,7 +17,7 @@
 - Dark mode by Tailwind CSS
 
 ## Technologies Used
-- NextJs v13 with Typescript (Page Router)
+- NextJs v13 with Typescript & Eslint (Page Router)
 - Axios
 - TanStack Query v5
 - Tailwind CSS v3
